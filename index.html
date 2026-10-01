@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>신나는 세계 문화 탐험대 - 초등 3학년 의·식·주 탐구</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: 초등학생 친화적인 둥근 폰트 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      user-select: none;
+    }
+    .font-jua {
+      font-family: 'Jua', cursive;
+    }
+    .custom-bounce:hover {
+      transform: translateY(-5px) scale(1.02);
+    }
+  </style>
+</head>
+<body class="bg-amber-50 text-slate-800 min-h-screen flex flex-col justify-between selection:bg-amber-200">
+
+  <!-- 헤더 영역 -->
+  <header class="bg-gradient-to-r from-yellow-400 via-amber-300 to-orange-400 p-4 sm:p-5 shadow-lg sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="goHome()">
+        <span class="text-3xl sm:text-4xl animate-bounce">🌏</span>
+        <div>
+          <span class="bg-white/85 text-orange-800 text-xs sm:text-sm font-bold px-2 py-0.5 rounded-full inline-block mb-0.5">초등 3학년 사회 · 세계의 의식주</span>
+          <h1 class="text-xl sm:text-3xl font-jua text-amber-950 tracking-wide drop-shadow-sm">
+            신나는 세계 의·식·주 탐험대
+          </h1>
+        </div>
+      </div>
+      
+      <!-- 상단 홈 버튼 -->
+      <button onclick="goHome()" class="flex items-center gap-1.5 sm:gap-2 bg-white hover:bg-amber-100 text-amber-900 font-jua px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-2xl shadow-md hover:shadow-lg transition-all transform active:scale-95 text-sm sm:text-base border-2 border-amber-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>나라 선택하기</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 메인 컨텐츠 영역 -->
+  <main class="max-w-5xl mx-auto w-full p-4 sm:p-6 flex-grow flex flex-col justify-center">
+
+    <!-- 1. 나라 선택 화면 (Home Screen) -->
+    <section id="countrySelectionView" class="py-2 sm:py-4 transition-all duration-300">
+      <div class="text-center mb-6 sm:mb-8">
+        <div class="inline-flex items-center gap-2 bg-yellow-100 border border-yellow-300 text-yellow-800 text-sm sm:text-base font-bold px-4 py-1.5 rounded-full mb-3 shadow-sm">
+          <span>👕 🍚 🏡</span> 세계 친구들은 어떤 옷을 입고, 무엇을 먹고, 어떤 집에서 살까요?
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-jua text-amber-900 mb-2">
+          어느 나라의 의·식·주를 조사해볼까요?
+        </h2>
+        <p class="text-sm sm:text-base text-slate-600 font-medium">
+          나라 카드를 누르면 옷(의), 음식(식), 집(주)의 구체적인 특징을 한눈에 볼 수 있어요!
+        </p>
+      </div>
+
+      <!-- 나라 선택 카드 그리드 -->
+      <div id="countryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-5">
+        <!-- JS로 나라 카드들이 동적으로 생성됩니다 -->
+      </div>
+    </section>
+
+    <!-- 2. 문화 조사 상세 화면 (Detail View) -->
+    <section id="cultureDetailView" class="hidden py-2 sm:py-4 transition-all duration-300">
+      
+      <!-- 상단 컨트롤 및 나라 타이틀 카드 -->
+      <div class="bg-white rounded-3xl p-5 sm:p-8 shadow-xl border-4 border-yellow-200 mb-6 relative overflow-hidden">
+        <div class="absolute -right-8 -bottom-8 text-9xl opacity-10 pointer-events-none select-none" id="bgFlagEmoji">
+          🇰🇷
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-dashed border-amber-200 pb-5 mb-5">
+          <div class="flex items-center gap-4">
+            <span id="detailFlag" class="text-5xl sm:text-6xl p-2 bg-amber-50 rounded-2xl border border-amber-200 shadow-inner">
+              🇰🇷
+            </span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span id="detailContinent" class="bg-amber-100 text-amber-800 text-xs sm:text-sm font-bold px-2.5 py-0.5 rounded-full">
+                  아시아
+                </span>
+                <span class="text-xs sm:text-sm text-slate-500 font-medium" id="detailGreeting">
+                  인사말: "안녕하세요!"
+                </span>
+              </div>
+              <h2 id="detailCountryName" class="text-2xl sm:text-4xl font-jua text-slate-800 mt-1">
+                대한민국
+              </h2>
+            </div>
+          </div>
+
+          <!-- 다시 선택 버튼 -->
+          <div class="flex items-center gap-2">
+            <button onclick="goHome()" class="flex items-center justify-center gap-1.5 bg-amber-400 hover:bg-amber-500 text-amber-950 font-jua text-sm sm:text-base px-5 py-2.5 rounded-2xl shadow transition transform active:scale-95">
+              <span>🔙</span>
+              <span>다른 나라 선택</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 의식주 조사 항목 목록 (한 줄씩 3~4개 제공) -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg sm:text-xl font-jua text-amber-900 flex items-center gap-2">
+              <span>🔍</span>
+              <span>이 나라의 의(옷)·식(음식)·주(집) 살펴보기</span>
+            </h3>
+            <span class="text-xs sm:text-sm font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+              총 <span id="cultureCount" class="text-amber-600 font-bold">4</span>가지 특징
+            </span>
+          </div>
+
+          <!-- 문화 카드 목록 컨테이너 -->
+          <div id="cultureList" class="space-y-3 sm:space-y-4">
+            <!-- 자바스크립트로 한 줄씩 문화 특징이 렌더링됩니다 -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 하단 홈으로 가기 빅 버튼 -->
+      <div class="text-center pt-2 pb-6">
+        <button onclick="goHome()" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-amber-950 font-jua text-lg sm:text-xl px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all transform active:scale-95">
+          <span>🏠</span>
+          <span>홈으로 돌아가서 다른 나라 더 알아보기</span>
+          <span>✨</span>
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- 푸터 영역 -->
+  <footer class="bg-amber-100 border-t border-amber-200 text-slate-600 py-4 px-4 text-center text-xs sm:text-sm">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p class="font-medium">💡 초등학교 3학년 사회과 연계 '환경에 따른 세계 여러 나라의 다양한 의식주 생활'</p>
+      <p class="text-amber-800 font-semibold">신나는 세계 문화 탐험대</p>
+    </div>
+  </footer>
+
+  <script>
+    // 초등 3학년 교육과정에 맞춘 [옷(의) / 음식(식) / 집(주)] 구체적 데이터베이스
+    const countriesData = [
+      {
+        id: "korea",
+        name: "대한민국",
+        continent: "아시아",
+        flag: "🇰🇷",
+        greeting: '"안녕하세요!"',
+        bgTheme: "from-blue-50 to-red-50",
+        borderTheme: "border-red-300",
+        tagColor: "bg-red-100 text-red-700",
+        cultures: [
+          {
+            type: "의",
+            icon: "👘",
+            badgeColor: "bg-purple-100 text-purple-700 border-purple-200",
+            category: "옷 (의)",
+            title: "한복과 대님·고름",
+            desc: "단추 대신 옷고름을 매고, 바지 끝자락을 '대님'으로 묶어 겨울바람을 막고 활동하기 편하게 만들었어요."
+          },
+          {
+            type: "식",
+            icon: "🍲",
+            badgeColor: "bg-orange-100 text-orange-700 border-orange-200",
+            category: "음식 (식)",
+            title: "장독대 발효 음식과 숟가락·젓가락",
+            desc: "숨 쉬는 옹기 독에 김치, 된장, 간장을 보관해 발효시켜 먹으며, 국물은 숟가락으로 건더기는 쇠젓가락으로 집어먹어요."
+          },
+          {
+            type: "주",
+            icon: "🪵",
+            badgeColor: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            category: "집 (주)",
+            title: "구들장 온돌과 대청마루",
+            desc: "추운 겨울에는 방바닥 돌을 불로 데우는 '온돌'로 바닥을 따뜻하게 하고, 무더운 여름에는 바람이 잘 통하는 나무 마루에서 시원하게 지내요."
+          },
+          {
+            type: "식",
+            icon: "🍚",
+            badgeColor: "bg-orange-100 text-orange-700 border-orange-200",
+            category: "식사 예절 (식)",
+            title: "밥그릇을 식탁에 두고 먹기",
+            desc: "밥그릇이나 국그릇을 손으로 들고 먹지 않고 식탁 위에 반듯하게 둔 채 어른이 먼저 숟가락을 드신 뒤 함께 식사해요."
+          }
+        ]
+      },
+      {
+        id: "japan",
+        name: "일본",
+        continent: "아시아",
+        flag: "🇯🇵",
+        greeting: '"곤니치와 (こんにちは)"',
+        bgTheme: "from-rose-50 to-pink-50",
+        borderTheme: "border-pink-300",
+        tagColor: "bg-pink-100 text-pink-700",
+        cultures: [
+          {
+            type: "의",
+            icon: "👘",
+            badgeColor: "bg-purple-100 text-purple-700 border-purple-200",
+            category: "옷 (의)",
+            title: "기모노와 오비",
+            desc: "단추나 지퍼가 없는 긴 천 옷으로, 등 뒤에 '오비'라는 넓고 단단한 비단 띠를 리본 모양으로 묶어 옷을 고정해요."
+          },
+          {
+            type: "식",
+            icon: "🍣",
+            badgeColor: "bg-orange-100 text-orange-700 border-orange-200",
+            category: "음식 (식)",
+            title: "초밥과 국물 마시기",
+            desc: "식초로 간을 한 밥에 생선을 얹어 먹으며, 숟가락을 거의 쓰지 않고 국그릇을 두 손으로 들어 입에 대고 마셔요."
+          },
+          {
+            type: "주",
+            icon: "🌾",
+            badgeColor: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            category: "집 (주)",
+            title: "습기를 막는 다다미 바닥",
+            desc: "습하고 비가 잦은 섬나라 기후에 맞춰 볏짚과 골풀을 엮은 두꺼운 돗자리 '다다미'를 방바닥에 깔아 쾌적함을 유지해요."
+          },
+          {
+            type: "식",
+            icon: "🥢",
+            badgeColor: "bg-orange-100 text-orange-700 border-orange-200",
+            category: "식사 예절 (식)",
+            title: "밥그릇을 왼손에 들고 먹기",
+            desc: "고개를 밥상에 숙이고 먹는 것을 피하기 위해, 왼손으로 밥그릇을 가슴 높이까지 들고 젓가락으로만 식사해요."
+          }
+        ]
+      },
+      {
+        id: "usa",
+        name: "미국",
+        continent: "북아메리카",
+        flag: "🇺🇸",
+        greeting: '"헬로 (Hello)"',
+        bgTheme: "from-blue-50 to-indigo-50",
+        borderTheme: "border-blue-300",
+        tagColor: "bg-blue-100 text-blue-700",
+        cultures: [
+          {
+            type: "의",
+            icon: "👖",
+            badgeColor: "bg-purple-100 text-purple-700 border-purple-200",
+            category: "옷 (의)",
+            title: "튼튼한 청바지와 티셔츠",
+            desc: "150여 년 전 금을 캐던 광부들이 바위와 흙에 옷이 찢어지지 않도록 질긴 텐트 천(데님)에 구리 리벳을 박아 만든 바지에서 시작되었어요."
+          },
+          {
+            type: "식",
+            icon: "🍔",
+            badgeColor: "bg-orange-100 text-orange-700 border-orange-200",
+            category: "음식 (식)",
+            title: "손으로 집어먹는 핑거푸드와 바비큐",
+            desc: "야외 그릴에 소시지와 소고기 패티를 구워 빵 사이에 채소와 함께 끼워 먹는 햄버거, 핫도그처럼 간편한 음식을 즐겨요."
+          },
+          {
+            type: "주",
+            icon: "🏡",
+            badgeColor: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            category: "집 (주)",
+            title: "넓은 잔디 마당과 차고가 있는 목조 주택",
+            desc: "가족이 모여 바비큐를 하는 뒷마당(백야드)과 차 2대를 세우는 차고(개러지)가 딸린 나무 구조의 단층·2층 주택이 많아요."
+          },
+          {
+            type: "주",
+            icon: "👟",
+            badgeColor: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            category: "생활 습관 (주)",
+            title: "실내에서 신발 신고 생활하기",
+            desc: "바닥 난방이 없는 카펫이나 마루 바닥 위를 실내용 신발이나 운동화를 그대로 신고 다니는 생활 풍습이 있어요."
+          }
+        ]
+      },
+      {
+        id: "france",
+        name: "프랑스",
+        continent: "유럽",
+        flag: "🇫🇷",
+        greeting: '"봉주르 (Bonjour)"',
+        bgTheme: "from-sky-50 to-blue-50",
+        borderTheme: "border-sky-300",
+        tagColor: "bg-sky-100 text-sky-700",
+        cultures: [
+          {
+            type: "의",
+            icon: "🧢",
+            badgeColor: "bg-purple-100 text-purple-700 border-purple-200",
+            category: "옷 (의)",
+            title: "양모 베레모와 마린 룩",
+            desc: "피레네 산맥의 양치기들이 비바람과 추위를 막기 위해 양털로 눌러 만든 챙 없는 둥근 모자 '베레모'가 유명해요."
+          },
+          {
+            type: "식",
+            icon: "🥖",
+            badgeColor: "bg-orange-100 text-orange-700 border-orange-200",
+            category: "음식 (식)",
+            title: "바게트 빵과 다양한 치즈",
+            desc: "밀가루, 물, 소금, 효모만 넣고 길쭉하게 구워 겉이 매우 바삭한 빵으로, 칼을 쓰지 않고 손으로 뚝뚝 뜯어 치즈와 함께 먹어요."
+          },
+          {
+            type: "주",
+            icon: "🏢",
+            badgeColor: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            category: "집 (주)",
+            title: "두꺼운 석회암 아파트와 창문 덧창",
+            desc: "밝은 베이지색 석회암 돌벽을 5~6층 높이로 단단하게 쌓아 올리고, 강한 햇빛과 찬바람을 막기 위해 창문 바깥에 나무 덧창을 닫아요."
+          },
+          {
+            type: "식",
+            icon: "🍽️",
+            badgeColor: "bg-orange-100 text-orange-700 border-orange-200",
+            category: "식사 예절 (식)",
+            title: "천천히 이야기 나누는 코스 요리",
+            desc: "전채 요리, 고기·생선 요리, 치즈와 디저트를 차례대로 천천히 맛보며 2시간 넘게 식탁에서 가족과 도란도란 이야기를 나눠요."
+          }
+        ]
+      },
+      {
+        id: "india",
+        name: "인도",
+        continent: "아시아",
+        flag: "🇮🇳",
+        greeting: '"나마스테 (Namaste)"',
+        bgTheme: "from-orange-50 to-amber-50",
+        borderTheme: "border-orange-300",
+        tagColor: "bg-orange-100 text-orange-700",
+        cultures: [
+          {
+            type: "의",
+            icon: "🥻",
+            badgeColor: "bg-purple-100 text-purple-700 border-purple-200",
+            category: "옷 (의)",
+            title: "바느질 없는 시원한 사리와 도티",
+            desc: "더운 기후 때문에 5~6미터에 달하는 긴 면 천을 바느질하지 않고 허리에 둘러 어깨에 걸쳐 입어 통풍이 아주 잘 돼요."
+          },
+          {
+            type: "식",
+            icon: "🍛",
+            badgeColor: "bg-orange-100 text-orange-700 border-orange-200",
+            category: "음식 (식)",
+            title: "향신료 커리와 화덕 빵 '난'",
+            desc: "강황, 계피 등 여러 향신료를 끓인 커리에 진흙 화덕 벽에 찰싹 붙여 구운 납작한 빵 '난'을 뜯어 푹 찍어 먹어요."
+          },
+          {
+            type: "주",
+            icon: "🧱",
+            badgeColor: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            category: "집 (주)",
+            title: "흙벽과 평평한 옥상 집",
+            desc: "더위를 피하기 위해 두꺼운 진흙 반죽으로 벽을 세워 실내를 서늘하게 만들고, 밤에는 평평한 옥상에 올라가 별을 보며 바람을 쐬요."
+          },
+          {
+            type: "식",
+            icon: "🖐️",
+            badgeColor: "bg-orange-100 text-orange-700 border-orange-200",
+            category: "식사 예절 (식)",
+            title: "오른손 손가락으로 음식 먹기",
+            desc: "음식의 온도를 손끝으로 느끼고 정갈하게 먹기 위해, 깨끗이 씻은 '오른손의 엄지와 검지·중지'만을 사용해 음식을 모아 먹어요."
+          }
+        ]
+      },
+      {
+        id: "egypt",
+        name: "이집트",
+        continent: "아프리카",
+        flag: "🇪🇬",
+        greeting: '"아흘란 (Ahlan)"',
+        bgTheme: "from-amber-50 to-yellow-50",
+        borderTheme: "border-yellow-400",
+        tagColor: "bg-yellow-100 text-yellow-800",
+        cultures: [
+          {
+            type: "의",
+            icon: "🥼",
+            badgeColor: "bg-purple-100 text-purple-700 border-purple-200",
+            category: "옷 (의)",
+            title: "모래바람을 막는 갈라베야",
+            desc: "한낮에 40도가 넘는 사막 볕과 모래바람으로부터 피부를 보호하기 위해 발목까지 길게 내려오는 헐렁한 면 원피스 옷을 입어요."
+          },
+          {
+            type: "식",
+            icon: "🫓",
+            badgeColor: "bg-orange-100 text-orange-700 border-orange-200",
+            category: "음식 (식)",
+            title: "주머니처럼 속이 빈 납작빵 '에이시'",
+            desc: "밀가루 반죽을 뜨거운 화덕에 순간적으로 구워 가운데가 공기주머니처럼 부푼 빵으로, 반을 갈라 콩 소스를 넣어 샌드위치처럼 먹어요."
+          },
+          {
+            type: "주",
+            icon: "🛖",
+            badgeColor: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            category: "집 (주)",
+            title: "햇볕에 말린 진흙벽돌(어도비) 집",
+            desc: "비가 거의 오지 않기 때문에 나일강의 진흙과 짚을 섞어 햇볕에 말린 벽돌로 벽을 두껍게 쌓아 바깥의 뜨거운 열기를 차단해요."
+          },
+          {
+            type: "주",
+            icon: "🪟",
+            badgeColor: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            category: "집 (주)",
+            title: "모래를 막는 아주 작은 창문",
+            desc: "사막에서 불어오는 강한 모래바람과 뜨거운 햇살이 방 안으로 들어오지 못하도록 창문을 아주 작고 높게 만들어요."
+          }
+        ]
+      },
+      {
+        id: "brazil",
+        name: "브라질",
+        continent: "남아메리카",
+        flag: "🇧🇷",
+        greeting: '"올라 (Olá)"',
+        bgTheme: "from-emerald-50 to-green-50",
+        borderTheme: "border-emerald-300",
+        tagColor: "bg-emerald-100 text-emerald-700",
+        cultures: [
+          {
+            type: "의",
+            icon: "🩴",
+            badgeColor: "bg-purple-100 text-purple-700 border-purple-200",
+            category: "옷 (의)",
+            title: "가벼운 고무 조리(하바이아나스)와 얇은 옷",
+            desc: "열대 기후로 덥고 습하기 때문에 땀이 잘 마르는 얇은 면 티셔츠와 함께 천연고무로 만든 편안한 엄지 슬리퍼(조리)를 온 국민이 즐겨 신어요."
+          },
+          {
+            type: "식",
+            icon: "🍲",
+            badgeColor: "bg-orange-100 text-orange-700 border-orange-200",
+            category: "음식 (식)",
+            title: "검은콩 스튜 '페이조아다'와 파로파",
+            desc: "영양이 풍부한 검은콩과 고기를 옹기 냄비에 진하게 푹 삶아 쌀밥 위에 붓고, 카사바 뿌리를 볶은 고소한 가루 '파로파'를 뿌려 든든히 먹어요."
+          },
+          {
+            type: "주",
+            icon: "🪵",
+            badgeColor: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            category: "집 (주)",
+            title: "물 위에 기둥을 세운 수상가옥 '팔라피타'",
+            desc: "아마존강 주변은 우기 때 비가 쏟아져 물이 불어나므로, 긴 나무 기둥을 높이 박고 그 위에 집을 지어 방 안 침수와 뱀을 막아요."
+          },
+          {
+            type: "식",
+            icon: "🍢",
+            badgeColor: "bg-orange-100 text-orange-700 border-orange-200",
+            category: "음식 (식)",
+            title: "긴 꼬치에 구운 숯불 바비큐 '슈하스코'",
+            desc: "두툼한 소고기를 1미터 길이의 쇠꼬치에 꿰어 굵은 소금만 뿌린 뒤 숯불에 돌려가며 굽고, 긴 칼로 겉면을 얇게 썰어 나눠 먹어요."
+          }
+        ]
+      },
+      {
+        id: "australia",
+        name: "호주",
+        continent: "오세아니아",
+        flag: "🇦🇺",
+        greeting: '"지데이 (G\'day)"',
+        bgTheme: "from-cyan-50 to-teal-50",
+        borderTheme: "border-teal-300",
+        tagColor: "bg-teal-100 text-teal-700",
+        cultures: [
+          {
+            type: "의",
+            icon: "👒",
+            badgeColor: "bg-purple-100 text-purple-700 border-purple-200",
+            category: "옷 (의)",
+            title: "챙이 넓은 모자와 자외선 차단 래시가드",
+            desc: "남반구의 강한 햇빛으로부터 피부와 눈을 지키기 위해 챙이 아주 넓은 가죽 모자를 쓰고, 바다에서는 긴팔 수영복(래시가드)을 필수로 입어요."
+          },
+          {
+            type: "식",
+            icon: "🍞",
+            badgeColor: "bg-orange-100 text-orange-700 border-orange-200",
+            category: "음식 (식)",
+            title: "구운 빵에 발라먹는 짭짤한 '베지마이트'",
+            desc: "보리 효모 추출물로 만든 검은색 영양 잼으로, 바삭하게 구운 토스트에 버터를 듬뿍 바른 뒤 베지마이트를 살짝 펴 발라 아침 식사로 먹어요."
+          },
+          {
+            type: "주",
+            icon: "🏡",
+            badgeColor: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            category: "집 (주)",
+            title: "바람이 통하는 고상식 '퀸즐랜더' 주택",
+            desc: "덥고 습한 아열대 기후를 이겨내기 위해 집 바닥을 땅에서 1~2미터 띄워 아래로 시원한 바람이 통하게 하고 넓은 그늘 발코니(베란다)를 둘러요."
+          },
+          {
+            type: "식",
+            icon: "🥩",
+            badgeColor: "bg-orange-100 text-orange-700 border-orange-200",
+            category: "식생활 (식)",
+            title: "동네 공원의 무료 야외 바비큐 시설",
+            desc: "도시 공원마다 누구든 버튼만 누르면 켜지는 스테인리스 전기 그릴이 마련되어 있어, 주말마다 소시지와 고기를 구워 먹어요."
+          }
+        ]
+      }
+    ];
+
+    let currentCountry = null;
+
+    // 가벼운 피드백 비프음 (Web Audio API)
+    function playBeep(frequency = 580, duration = 0.08) {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(frequency, ctx.currentTime);
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {
+        // 무시
+      }
+    }
+
+    // 나라 선택 카드 목록 생성
+    function renderCountryCards() {
+      const container = document.getElementById("countryGrid");
+      container.innerHTML = "";
+
+      countriesData.forEach((c) => {
+        const card = document.createElement("div");
+        card.className = `custom-bounce bg-white rounded-3xl p-4 sm:p-5 shadow-md hover:shadow-xl border-2 ${c.borderTheme} cursor-pointer transition-all flex flex-col items-center text-center relative group overflow-hidden`;
+        card.onclick = () => selectCountry(c.id);
+
+        card.innerHTML = `
+          <div class="absolute -top-6 -right-6 w-16 h-16 bg-gradient-to-br ${c.bgTheme} rounded-full opacity-60"></div>
+          <span class="text-5xl sm:text-6xl my-2 filter drop-shadow transition-transform group-hover:scale-110 duration-200">
+            ${c.flag}
+          </span>
+          <span class="${c.tagColor} text-xs font-bold px-2 py-0.5 rounded-full mb-1">
+            ${c.continent}
+          </span>
+          <h3 class="text-xl sm:text-2xl font-jua text-slate-800 mb-1">
+            ${c.name}
+          </h3>
+          <p class="text-xs text-slate-500 font-medium mb-3">
+            ${c.greeting}
+          </p>
+          <div class="w-full bg-amber-50 group-hover:bg-amber-400 group-hover:text-amber-950 text-amber-800 font-jua text-xs sm:text-sm py-2 px-3 rounded-xl transition-colors flex items-center justify-center gap-1">
+            <span>의·식·주 탐험하기</span>
+            <span>👉</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // 특정 나라 선택 시 의식주 상세 페이지로 전환
+    function selectCountry(countryId) {
+      playBeep(520, 0.09);
+      const country = countriesData.find((c) => c.id === countryId);
+      if (!country) return;
+
+      currentCountry = country;
+
+      // 상단 기본 정보 반영
+      document.getElementById("detailFlag").innerText = country.flag;
+      document.getElementById("bgFlagEmoji").innerText = country.flag;
+      document.getElementById("detailContinent").innerText = country.continent;
+      document.getElementById("detailCountryName").innerText = country.name;
+      document.getElementById("detailGreeting").innerText = `인사말: ${country.greeting}`;
+      document.getElementById("cultureCount").innerText = country.cultures.length;
+
+      // 의·식·주 리스트 렌더링 (한 줄씩 명확하게 구성)
+      const listContainer = document.getElementById("cultureList");
+      listContainer.innerHTML = "";
+
+      country.cultures.forEach((item, index) => {
+        const row = document.createElement("div");
+        row.className = "flex flex-col sm:flex-row sm:items-start gap-3 p-3.5 sm:p-4 rounded-2xl bg-amber-50/70 border border-amber-200 hover:bg-amber-100/70 transition shadow-sm";
+        
+        row.innerHTML = `
+          <div class="flex items-center gap-3 min-w-[170px] sm:min-w-[210px] pt-0.5">
+            <span class="w-7 h-7 rounded-full bg-amber-200 text-amber-900 font-jua flex items-center justify-center text-xs font-bold shadow-inner shrink-0">
+              ${index + 1}
+            </span>
+            <span class="text-3xl shrink-0">${item.icon}</span>
+            <div class="flex flex-col">
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-md border inline-block w-fit ${item.badgeColor}">
+                ${item.category}
+              </span>
+              <strong class="font-jua text-base sm:text-lg text-slate-800 leading-snug mt-0.5">${item.title}</strong>
+            </div>
+          </div>
+          <div class="flex-grow pl-10 sm:pl-2">
+            <p class="text-sm sm:text-base text-slate-700 font-medium leading-relaxed">
+              ${item.desc}
+            </p>
+          </div>
+        `;
+        listContainer.appendChild(row);
+      });
+
+      // 뷰 전환
+      document.getElementById("countrySelectionView").classList.add("hidden");
+      document.getElementById("cultureDetailView").classList.remove("hidden");
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 첫 화면(홈)으로 이동하기
+    function goHome() {
+      playBeep(440, 0.08);
+      document.getElementById("cultureDetailView").classList.add("hidden");
+      document.getElementById("countrySelectionView").classList.remove("hidden");
+      currentCountry = null;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 초기 실행
+    window.addEventListener("DOMContentLoaded", () => {
+      renderCountryCards();
+    });
+  </script>
+</body>
+</html>
